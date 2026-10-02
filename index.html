@@ -1,0 +1,385 @@
+
+MARIA EDUARDA CALDAS DOS SANTOS <maria.caldas.santos@escola.pr.gov.br>
+28 de set. de 2026, 14:56 (há 4 dias)
+para mim
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo Dorama - Séries e Episódios</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fce4ec;
+            color: #d81b60;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas fixo no fundo para a animação das pétalas de cerejeira em movimento */
+        #sakura-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.15);
+            max-width: 850px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+            border: 2px solid #f8bbd0;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #d81b60;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-shadow: 1px 1px 2px rgba(255, 182, 193, 0.5);
+        }
+
+        header p {
+            color: #e91e63;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grid-doramas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            overflow: hidden;
+            border: 2px solid #f8bbd0;
+            box-shadow: 0 10px 20px rgba(233, 30, 99, 0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(216, 27, 96, 0.25);
+            border-color: #ec407a;
+        }
+
+        .card-banner {
+            width: 100%;
+            height: 360px;
+            overflow: hidden;
+            background-color: #f8bbd0;
+        }
+
+        .card-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-banner img {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            text-align: center;
+        }
+
+        .genre-tag {
+            display: inline-block;
+            background-color: #f8bbd0;
+            color: #880e4f;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            align-self: center;
+        }
+
+        .card-body h3 {
+            font-size: 1.3rem;
+            color: #d81b60;
+            margin-bottom: 10px;
+        }
+
+        .card-body p {
+            font-size: 0.9rem;
+            color: #c2185b;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        /* Área de seleção de episódios */
+        .episodes-box {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .episodes-box label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #d81b60;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .episodes-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #f48fb1;
+            background-color: #fff0f5;
+            color: #ad1457;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-watch {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #ec407a, #d81b60);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 0;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(216, 27, 96, 0.3);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-watch:hover {
+            background: linear-gradient(135deg, #d81b60, #c2185b);
+            transform: scale(1.02);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #d81b60;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fundo em movimento com pétalas de cerejeira -->
+    <canvas id="sakura-canvas"></canvas>
+
+    <header>
+        <h1>🌸 Mundo Dorama 🌸</h1>
+        <p>Escolha o dorama e assista a cada episódio da série</p>
+    </header>
+
+    <main class="container">
+        <div id="galeria" class="grid-doramas"></div>
+    </main>
+
+    <footer>
+        <p>🌸 2026 Mundo Dorama - Todos os episódios disponíveis 🌸</p>
+    </footer>
+
+    <script>
+        // Dados XML com capas e a lista de episódios de cada série
+        const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
+        <doramas>
+            <item>
+                <id>pouso</id>
+                <titulo>Pouso de Emergência no Seu Coração</titulo>
+                <genero>Romance / Drama</genero>
+                <imagem>https://upload.wikimedia.org/wikipedia/en/6/64/Crash_Landing_on_You_main_poster.jpg</imagem>
+                <sinopse>Uma herdeira sul-coreana sofre um acidente e vai parar na Coreia do Norte, onde conhece um oficial do exército.</sinopse>
+                <episodios>16</episodios>
+                <baseLink>https://www.google.com/search?q=Pouso+de+Emergencia+no+Seu+Coracao+Episodio+</baseLink>
+            </item>
+            <item>
+                <id>pretendente</id>
+                <titulo>Pretendente Surpresa</titulo>
+                <genero>Comédia Romântica</genero>
+                <imagem>https://upload.wikimedia.org/wikipedia/en/1/1a/Business_Proposal_poster.jpg</imagem>
+                <sinopse>Ha-ri vai a um encontro às cegas no lugar da amiga para afastar o pretendente, mas descobre que ele é o CEO da sua empresa.</sinopse>
+                <episodios>12</episodios>
+                <baseLink>https://www.google.com/search?q=Pretendente+Surpresa+Episodio+</baseLink>
+            </item>
+            <item>
+                <id>goblin</id>
+                <titulo>Goblin (Guardian)</titulo>
+                <genero>Fantasia / Romance</genero>
+                <imagem>https://upload.wikimedia.org/wikipedia/en/6/67/Guardian_The_Lonely_and_Great_God_poster.jpg</imagem>
+                <sinopse>Um ser imortal precisa de uma noiva humana para terminar a sua maldição, encontrando uma estudante com um destino especial.</sinopse>
+                <episodios>16</episodios>
+                <baseLink>https://www.google.com/search?q=Goblin+Dorama+Episodio+</baseLink>
+            </item>
+            <item>
+                <id>vincenzo</id>
+                <titulo>Vincenzo</titulo>
+                <genero>Ação / Comédia Negra</genero>
+                <imagem>https://upload.wikimedia.org/wikipedia/en/5/5b/Vincenzo_TV_series.jpg</imagem>
+                <sinopse>Um advogado e conselheiro da máfia italiana regressa à Coreia do Sul para fazer justiça contra um conglomerado corrupto.</sinopse>
+                <episodios>20</episodios>
+                <baseLink>https://www.google.com/search?q=Vincenzo+Dorama+Episodio+</baseLink>
+            </item>
+        </doramas>`;
+
+        // Processamento dos dados XML
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlData, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        const container = document.getElementById("galeria");
+
+        items.forEach(item => {
+            const id = item.querySelector("id").textContent;
+            const titulo = item.querySelector("titulo").textContent;
+            const genero = item.querySelector("genero").textContent;
+            const imagem = item.querySelector("imagem").textContent;
+            const sinopse = item.querySelector("sinopse").textContent;
+            const totalEpisodios = parseInt(item.querySelector("episodios").textContent);
+            const baseLink = item.querySelector("baseLink").textContent;
+
+            // Criação das opções de episódios
+            let optionsHTML = '';
+            for (let i = 1; i <= totalEpisodios; i++) {
+                optionsHTML += `<option value="${baseLink}${i}">Episódio ${i}</option>`;
+            }
+
+            const card = document.createElement("article");
+            card.className = "card";
+            card.innerHTML = `
+                <div class="card-banner">
+                    <img src="${imagem}" alt="Capa de ${titulo}">
+                </div>
+                <div class="card-body">
+                    <span class="genre-tag">${genero}</span>
+                    <h3>${titulo}</h3>
+                    <p>${sinopse}</p>
+                   
+                    <div class="episodes-box">
+                        <label for="select-${id}">Selecione o Episódio:</label>
+                        <select id="select-${id}" class="episodes-select">
+                            ${optionsHTML}
+                        </select>
+                    </div>
+
+                    <a id="btn-${id}" href="${baseLink}1" target="_blank" class="btn-watch">▶ Assistir Episódio 1</a>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // Atualiza o link do botão de acordo com o episódio selecionado
+            const selectEl = document.getElementById(`select-${id}`);
+            const btnEl = document.getElementById(`btn-${id}`);
+
+            selectEl.addEventListener('change', (e) => {
+                const epNum = selectEl.selectedIndex + 1;
+                btnEl.href = e.target.value;
+                btnEl.innerText = `▶ Assistir Episódio ${epNum}`;
+            });
+        });
+
+        // --- Animação das Pétalas de Cerejeira (Sakura em movimento) ---
+        const canvas = document.getElementById('sakura-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const petals = [];
+        const petalCount = 40;
+
+        for (let i = 0; i < petalCount; i++) {
+            petals.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 8 + 6,
+                speedY: Math.random() * 1.5 + 0.8,
+                speedX: Math.random() * 1 - 0.5,
+                angle: Math.random() * 360,
+                spin: Math.random() * 0.05 - 0.025
+            });
+        }
+
+        function drawPetal(p) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.fillStyle = '#f48fb1';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function animateSakura() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            petals.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.angle += p.spin;
+
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+
+                drawPetal(p);
+            });
+
+            requestAnimationFrame(animateSakura);
+        }
+
+        animateSakura();
+    </script>
+
+</body>
+</html>
